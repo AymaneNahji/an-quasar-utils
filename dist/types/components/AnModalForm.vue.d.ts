@@ -1,17 +1,18 @@
 import { QBtnProps, QCard } from 'quasar';
 declare function __VLS_template(): {
+    attrs: Partial<{}>;
     slots: {
-        "close-icon-btn"?(_: {
+        'close-icon-btn'?(_: {
             color: import("quasar").NamedColor | undefined;
             disable: boolean;
         }): any;
         content?(_: {}): any;
-        "cancel-btn"?(_: {
+        'cancel-btn'?(_: {
             color: import("quasar").NamedColor | undefined;
             disable: boolean;
             label: string;
         }): any;
-        "ok-btn"?(_: {
+        'ok-btn'?(_: {
             color: import("quasar").NamedColor | undefined;
             label: string;
             disable: boolean;
@@ -19,7 +20,7 @@ declare function __VLS_template(): {
         }): any;
     };
     refs: {};
-    attrs: Partial<{}>;
+    rootEl: any;
 };
 type __VLS_TemplateResult = ReturnType<typeof __VLS_template>;
 declare const __VLS_component: import("vue").DefineComponent<import("vue").ExtractPropTypes<{
