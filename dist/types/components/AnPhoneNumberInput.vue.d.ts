@@ -7,7 +7,6 @@ type Props = {
     } & Omit<QSelectProps, 'modelValue'>;
 } & QInputProps;
 declare function __VLS_template(): {
-    attrs: Partial<{}>;
     slots: Readonly<{
         "country-select-default": () => import("vue").VNode[];
         "country-select-prepend": () => import("vue").VNode[];
@@ -29,7 +28,6 @@ declare function __VLS_template(): {
             index: number;
             opt: any;
             selected: boolean;
-            html: boolean;
             removeAtIndex: (index: number) => void;
             toggleOption: (opt: any) => void;
             tabindex: number;
@@ -37,8 +35,6 @@ declare function __VLS_template(): {
         "country-select-option": (scope: {
             index: number;
             opt: any;
-            html: boolean;
-            label: string;
             selected: boolean;
             focused: boolean;
             toggleOption: (opt: any) => void;
@@ -66,7 +62,6 @@ declare function __VLS_template(): {
             index: number;
             opt: any;
             selected: boolean;
-            html: boolean;
             removeAtIndex: (index: number) => void;
             toggleOption: (opt: any) => void;
             tabindex: number;
@@ -74,8 +69,6 @@ declare function __VLS_template(): {
         "country-select-option": (scope: {
             index: number;
             opt: any;
-            html: boolean;
-            label: string;
             selected: boolean;
             focused: boolean;
             toggleOption: (opt: any) => void;
@@ -87,7 +80,7 @@ declare function __VLS_template(): {
         countrySelect: QSelect | null;
         phoneInput: QInput | null;
     };
-    rootEl: HTMLDivElement;
+    attrs: Partial<{}>;
 };
 type __VLS_TemplateResult = ReturnType<typeof __VLS_template>;
 declare const __VLS_component: import("vue").DefineComponent<Props, {}, {}, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, {} & {
@@ -96,10 +89,7 @@ declare const __VLS_component: import("vue").DefineComponent<Props, {}, {}, {}, 
 }, string, import("vue").PublicProps, Readonly<Props> & Readonly<{
     "onUpdate:modelValue"?: ((value: string) => any) | undefined;
     onSelectCountry?: ((value: ICountryData) => any) | undefined;
-}>, {}, {}, {}, {}, string, import("vue").ComponentProvideOptions, false, {
-    countrySelect: QSelect | null;
-    phoneInput: QInput | null;
-}, HTMLDivElement>;
+}>, {}, {}, {}, {}, string, import("vue").ComponentProvideOptions, false, {}, any>;
 declare const _default: __VLS_WithTemplateSlots<typeof __VLS_component, __VLS_TemplateResult["slots"]>;
 export default _default;
 type __VLS_WithTemplateSlots<T, S> = T & {

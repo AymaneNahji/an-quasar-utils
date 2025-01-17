@@ -6,19 +6,18 @@ type Props = {
     axiosInterceptor?: AxiosInstance;
     searchParam?: string;
 } & Omit<QSelectProps, 'options'>;
-type __VLS_Props = Props;
+declare let __VLS_typeProps: Props;
 type __VLS_PublicProps = {
     modelValue?: QSelect['modelValue'];
-} & __VLS_Props;
+} & typeof __VLS_typeProps;
 declare function __VLS_template(): {
-    attrs: Partial<{}>;
     slots: Readonly<QSelectSlots> & QSelectSlots;
     refs: {};
-    rootEl: any;
+    attrs: Partial<{}>;
 };
 type __VLS_TemplateResult = ReturnType<typeof __VLS_template>;
 declare const __VLS_component: import("vue").DefineComponent<__VLS_PublicProps, {}, {}, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, {
-    "update:modelValue": (value: any) => any;
+    "update:modelValue": (modelValue: any) => any;
 } & {
     filter: (val: string) => any;
     loading: (val: boolean) => any;
@@ -27,8 +26,8 @@ declare const __VLS_component: import("vue").DefineComponent<__VLS_PublicProps, 
 }, string, import("vue").PublicProps, Readonly<__VLS_PublicProps> & Readonly<{
     onFilter?: ((val: string) => any) | undefined;
     onLoading?: ((val: boolean) => any) | undefined;
-    "onUpdate:modelValue"?: ((value: any) => any) | undefined;
     onError?: ((val: unknown) => any) | undefined;
+    "onUpdate:modelValue"?: ((modelValue: any) => any) | undefined;
     "onUpdate:options"?: ((val: any[]) => any) | undefined;
 }>, {
     dark: boolean | null;

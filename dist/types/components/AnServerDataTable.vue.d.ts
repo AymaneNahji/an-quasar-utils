@@ -12,7 +12,7 @@ type Filter = {
     [key: string]: any;
 };
 type FilterModalSlots = InstanceType<typeof AnModalForm>['$slots'];
-export type AnServerDataTableSlots = QTableSlots & {
+export type AnServerDataTableSlots = Omit<QTableSlots, 'pagination'> & {
     [K in keyof FilterModalSlots as K extends "content" ? string : `filter-modal-${K}`]: FilterModalSlots[K];
 } & {
     "title"?(_: {}): any;
@@ -25,6 +25,14 @@ export type AnServerDataTableSlots = QTableSlots & {
         label: string;
         color: string;
         click: () => void;
+    }): any;
+    "pagination"?(_: {
+        value: number;
+        change: (val: number) => void;
+    }): any;
+    "page-size"?(_: {
+        value: number;
+        change: (val: number) => void;
     }): any;
 };
 export type FilterModalData = {
@@ -41,8 +49,7 @@ export type FilterModalData = {
     props?: InstanceType<typeof AnModalForm>['$props'];
 };
 declare function __VLS_template(): {
-    attrs: Partial<{}>;
-    slots: Readonly<QTableSlots & {
+    slots: Readonly<Omit<QTableSlots, "pagination"> & {
         readonly [x: string]: ((_: {}) => any) | undefined;
         readonly [x: `filter-modal-${string}`]: import("vue").Slot<any> | undefined;
         "filter-modal-close-icon-btn"?: ((_: {
@@ -72,7 +79,15 @@ declare function __VLS_template(): {
             color: string;
             click: () => void;
         }): any;
-    }> & QTableSlots & {
+        pagination?(_: {
+            value: number;
+            change: (val: number) => void;
+        }): any;
+        "page-size"?(_: {
+            value: number;
+            change: (val: number) => void;
+        }): any;
+    }> & Omit<QTableSlots, "pagination"> & {
         readonly [x: string]: ((_: {}) => any) | undefined;
         readonly [x: `filter-modal-${string}`]: import("vue").Slot<any> | undefined;
         "filter-modal-close-icon-btn"?: ((_: {
@@ -101,6 +116,14 @@ declare function __VLS_template(): {
             label: string;
             color: string;
             click: () => void;
+        }): any;
+        pagination?(_: {
+            value: number;
+            change: (val: number) => void;
+        }): any;
+        "page-size"?(_: {
+            value: number;
+            change: (val: number) => void;
         }): any;
     };
     refs: {
@@ -125,15 +148,50 @@ declare function __VLS_template(): {
                     class?: string;
                     style?: string;
                 } & {
-                    dark?: boolean | null | undefined | undefined;
-                    square?: boolean | undefined | undefined;
-                    flat?: boolean | undefined | undefined;
-                    bordered?: boolean | undefined | undefined;
-                    tag?: string | undefined | undefined;
+                    dark?: boolean | null | undefined;
+                    square?: boolean | undefined;
+                    flat?: boolean | undefined;
+                    bordered?: boolean | undefined;
+                    tag?: string | undefined;
                 }) | undefined;
                 readonly onHide?: (() => any) | undefined;
                 readonly onSubmit?: ((evt: Event | SubmitEvent) => any) | undefined;
-            } & import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, "okLabel" | "cancelLabel" | "title" | "btnsColor" | "isLoading" | "formIsLoading">;
+            } & import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps & Readonly<import("vue").ExtractPropTypes<{
+                isLoading: {
+                    type: BooleanConstructor;
+                    default: boolean;
+                };
+                formIsLoading: {
+                    type: BooleanConstructor;
+                    default: boolean;
+                };
+                okLabel: {
+                    type: StringConstructor;
+                    default: string;
+                };
+                cancelLabel: {
+                    type: StringConstructor;
+                    default: string;
+                };
+                title: {
+                    type: StringConstructor;
+                    default: string;
+                };
+                btnsColor: {
+                    type: () => import("quasar").QBtnProps["color"];
+                    default: import("quasar").QBtnProps["color"];
+                };
+                modalCardProps: {
+                    type: () => ({
+                        class?: string;
+                        style?: string;
+                    } & InstanceType<typeof import("quasar").QCard>["$props"]);
+                    required: false;
+                };
+            }>> & Readonly<{
+                onHide?: (() => any) | undefined;
+                onSubmit?: ((evt: Event | SubmitEvent) => any) | undefined;
+            }>, "okLabel" | "cancelLabel" | "title" | "btnsColor" | "isLoading" | "formIsLoading">;
             $attrs: {
                 [x: string]: unknown;
             };
@@ -263,17 +321,17 @@ declare function __VLS_template(): {
             hide: () => void;
         }> & {} & import("vue").ComponentCustomProperties & {} & {
             $slots: {
-                'close-icon-btn'?(_: {
+                "close-icon-btn"?(_: {
                     color: import("quasar").NamedColor | undefined;
                     disable: boolean;
                 }): any;
                 content?(_: {}): any;
-                'cancel-btn'?(_: {
+                "cancel-btn"?(_: {
                     color: import("quasar").NamedColor | undefined;
                     disable: boolean;
                     label: string;
                 }): any;
-                'ok-btn'?(_: {
+                "ok-btn"?(_: {
                     color: import("quasar").NamedColor | undefined;
                     label: string;
                     disable: boolean;
@@ -282,7 +340,7 @@ declare function __VLS_template(): {
             };
         }) | null;
     };
-    rootEl: any;
+    attrs: Partial<{}>;
 };
 type __VLS_TemplateResult = ReturnType<typeof __VLS_template>;
 declare const __VLS_component: import("vue").DefineComponent<import("vue").ExtractPropTypes<{
@@ -328,6 +386,10 @@ declare const __VLS_component: import("vue").DefineComponent<import("vue").Extra
         type: BooleanConstructor;
         default: boolean;
     };
+    showPageSizeSelect: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
     enableRowClick: {
         type: BooleanConstructor;
         default: boolean;
@@ -345,6 +407,14 @@ declare const __VLS_component: import("vue").DefineComponent<import("vue").Extra
         default: { [K in keyof Paginated]: string; };
     };
     orderingKey: {
+        type: StringConstructor;
+        default: string;
+    };
+    pageSizes: {
+        type: () => number[];
+        default: number[];
+    };
+    searchUrlParam: {
         type: StringConstructor;
         default: string;
     };
@@ -399,6 +469,10 @@ declare const __VLS_component: import("vue").DefineComponent<import("vue").Extra
         type: BooleanConstructor;
         default: boolean;
     };
+    showPageSizeSelect: {
+        type: BooleanConstructor;
+        default: boolean;
+    };
     enableRowClick: {
         type: BooleanConstructor;
         default: boolean;
@@ -419,6 +493,14 @@ declare const __VLS_component: import("vue").DefineComponent<import("vue").Extra
         type: StringConstructor;
         default: string;
     };
+    pageSizes: {
+        type: () => number[];
+        default: number[];
+    };
+    searchUrlParam: {
+        type: StringConstructor;
+        default: string;
+    };
 }>> & Readonly<{
     onOpenFilter?: (() => any) | undefined;
     onRowClick?: ((row: any, index: number) => any) | undefined;
@@ -435,6 +517,7 @@ declare const __VLS_component: import("vue").DefineComponent<import("vue").Extra
     hidePagination: boolean;
     hasSearch: boolean;
     hasFilter: boolean;
+    showPageSizeSelect: boolean;
     enableRowClick: boolean;
     filterModalData: FilterModalData;
     paginationResponseKeys: {
@@ -445,185 +528,9 @@ declare const __VLS_component: import("vue").DefineComponent<import("vue").Extra
         results: string;
     };
     orderingKey: string;
-}, {}, {}, {}, string, import("vue").ComponentProvideOptions, true, {
-    filterModal: ({
-        $: import("vue").ComponentInternalInstance;
-        $data: {};
-        $props: Partial<{
-            okLabel: string;
-            cancelLabel: string;
-            title: string;
-            btnsColor: import("quasar").NamedColor | undefined;
-            isLoading: boolean;
-            formIsLoading: boolean;
-        }> & Omit<{
-            readonly okLabel: string;
-            readonly cancelLabel: string;
-            readonly title: string;
-            readonly btnsColor: import("quasar").NamedColor | undefined;
-            readonly isLoading: boolean;
-            readonly formIsLoading: boolean;
-            readonly modalCardProps?: ({
-                class?: string;
-                style?: string;
-            } & {
-                dark?: boolean | null | undefined | undefined;
-                square?: boolean | undefined | undefined;
-                flat?: boolean | undefined | undefined;
-                bordered?: boolean | undefined | undefined;
-                tag?: string | undefined | undefined;
-            }) | undefined;
-            readonly onHide?: (() => any) | undefined;
-            readonly onSubmit?: ((evt: Event | SubmitEvent) => any) | undefined;
-        } & import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, "okLabel" | "cancelLabel" | "title" | "btnsColor" | "isLoading" | "formIsLoading">;
-        $attrs: {
-            [x: string]: unknown;
-        };
-        $refs: {
-            [x: string]: unknown;
-        };
-        $slots: Readonly<{
-            [name: string]: import("vue").Slot<any> | undefined;
-        }>;
-        $root: import("vue").ComponentPublicInstance | null;
-        $parent: import("vue").ComponentPublicInstance | null;
-        $host: Element | null;
-        $emit: ((event: "hide") => void) & ((event: "submit", evt: Event | SubmitEvent) => void);
-        $el: any;
-        $options: import("vue").ComponentOptionsBase<Readonly<import("vue").ExtractPropTypes<{
-            isLoading: {
-                type: BooleanConstructor;
-                default: boolean;
-            };
-            formIsLoading: {
-                type: BooleanConstructor;
-                default: boolean;
-            };
-            okLabel: {
-                type: StringConstructor;
-                default: string;
-            };
-            cancelLabel: {
-                type: StringConstructor;
-                default: string;
-            };
-            title: {
-                type: StringConstructor;
-                default: string;
-            };
-            btnsColor: {
-                type: () => import("quasar").QBtnProps["color"];
-                default: import("quasar").QBtnProps["color"];
-            };
-            modalCardProps: {
-                type: () => ({
-                    class?: string;
-                    style?: string;
-                } & InstanceType<typeof import("quasar").QCard>["$props"]);
-                required: false;
-            };
-        }>> & Readonly<{
-            onHide?: (() => any) | undefined;
-            onSubmit?: ((evt: Event | SubmitEvent) => any) | undefined;
-        }>, {
-            show: () => void;
-            hide: () => void;
-        }, {}, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, {} & {
-            hide: () => any;
-            submit: (evt: Event | SubmitEvent) => any;
-        }, string, {
-            okLabel: string;
-            cancelLabel: string;
-            title: string;
-            btnsColor: import("quasar").NamedColor | undefined;
-            isLoading: boolean;
-            formIsLoading: boolean;
-        }, {}, string, {}, import("vue").GlobalComponents, import("vue").GlobalDirectives, string, import("vue").ComponentProvideOptions> & {
-            beforeCreate?: (() => void) | (() => void)[];
-            created?: (() => void) | (() => void)[];
-            beforeMount?: (() => void) | (() => void)[];
-            mounted?: (() => void) | (() => void)[];
-            beforeUpdate?: (() => void) | (() => void)[];
-            updated?: (() => void) | (() => void)[];
-            activated?: (() => void) | (() => void)[];
-            deactivated?: (() => void) | (() => void)[];
-            beforeDestroy?: (() => void) | (() => void)[];
-            beforeUnmount?: (() => void) | (() => void)[];
-            destroyed?: (() => void) | (() => void)[];
-            unmounted?: (() => void) | (() => void)[];
-            renderTracked?: ((e: import("vue").DebuggerEvent) => void) | ((e: import("vue").DebuggerEvent) => void)[];
-            renderTriggered?: ((e: import("vue").DebuggerEvent) => void) | ((e: import("vue").DebuggerEvent) => void)[];
-            errorCaptured?: ((err: unknown, instance: import("vue").ComponentPublicInstance | null, info: string) => boolean | void) | ((err: unknown, instance: import("vue").ComponentPublicInstance | null, info: string) => boolean | void)[];
-        };
-        $forceUpdate: () => void;
-        $nextTick: typeof import("vue").nextTick;
-        $watch<T extends string | ((...args: any) => any)>(source: T, cb: T extends (...args: any) => infer R ? (...args: [R, R, import("@vue/reactivity").OnCleanup]) => any : (...args: [any, any, import("@vue/reactivity").OnCleanup]) => any, options?: import("vue").WatchOptions): import("vue").WatchStopHandle;
-    } & Readonly<{
-        okLabel: string;
-        cancelLabel: string;
-        title: string;
-        btnsColor: import("quasar").NamedColor | undefined;
-        isLoading: boolean;
-        formIsLoading: boolean;
-    }> & Omit<Readonly<import("vue").ExtractPropTypes<{
-        isLoading: {
-            type: BooleanConstructor;
-            default: boolean;
-        };
-        formIsLoading: {
-            type: BooleanConstructor;
-            default: boolean;
-        };
-        okLabel: {
-            type: StringConstructor;
-            default: string;
-        };
-        cancelLabel: {
-            type: StringConstructor;
-            default: string;
-        };
-        title: {
-            type: StringConstructor;
-            default: string;
-        };
-        btnsColor: {
-            type: () => import("quasar").QBtnProps["color"];
-            default: import("quasar").QBtnProps["color"];
-        };
-        modalCardProps: {
-            type: () => ({
-                class?: string;
-                style?: string;
-            } & InstanceType<typeof import("quasar").QCard>["$props"]);
-            required: false;
-        };
-    }>> & Readonly<{
-        onHide?: (() => any) | undefined;
-        onSubmit?: ((evt: Event | SubmitEvent) => any) | undefined;
-    }>, "hide" | "show" | ("okLabel" | "cancelLabel" | "title" | "btnsColor" | "isLoading" | "formIsLoading")> & import("vue").ShallowUnwrapRef<{
-        show: () => void;
-        hide: () => void;
-    }> & {} & import("vue").ComponentCustomProperties & {} & {
-        $slots: {
-            'close-icon-btn'?(_: {
-                color: import("quasar").NamedColor | undefined;
-                disable: boolean;
-            }): any;
-            content?(_: {}): any;
-            'cancel-btn'?(_: {
-                color: import("quasar").NamedColor | undefined;
-                disable: boolean;
-                label: string;
-            }): any;
-            'ok-btn'?(_: {
-                color: import("quasar").NamedColor | undefined;
-                label: string;
-                disable: boolean;
-                loading: boolean;
-            }): any;
-        };
-    }) | null;
-}, any>;
+    pageSizes: number[];
+    searchUrlParam: string;
+}, {}, {}, {}, string, import("vue").ComponentProvideOptions, true, {}, any>;
 declare const _default: __VLS_WithTemplateSlots<typeof __VLS_component, __VLS_TemplateResult["slots"]>;
 export default _default;
 type __VLS_WithTemplateSlots<T, S> = T & {
